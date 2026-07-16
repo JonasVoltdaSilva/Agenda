@@ -57,6 +57,21 @@ function usePersistedList(storageKey) {
     setItems
   }];
 }
+function usePersistedValue(storageKey, defaultValue) {
+  const [value, setValue] = useState(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw !== null) return JSON.parse(raw);
+    } catch (e) {}
+    return defaultValue;
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(value));
+    } catch (e) {}
+  }, [storageKey, value]);
+  return [value, setValue];
+}
 const DataContext = createContext(null);
 function DataProvider({
   children
@@ -65,6 +80,7 @@ function DataProvider({
   const [documents, documentActions] = usePersistedList("agenda_documents");
   const [checklists, checklistActions] = usePersistedList("agenda_checklists");
   const [events, eventActions] = usePersistedList("agenda_events");
+  const [profile, setProfile] = usePersistedValue("agenda_profile", null);
   const value = {
     projects,
     projectActions,
@@ -73,7 +89,9 @@ function DataProvider({
     checklists,
     checklistActions,
     events,
-    eventActions
+    eventActions,
+    profile,
+    setProfile
   };
   return React.createElement(DataContext.Provider, {
     value: value

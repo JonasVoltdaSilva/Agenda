@@ -52,6 +52,24 @@ function usePersistedList(storageKey) {
   return [items, { add, update, remove, setItems }];
 }
 
+/* Hook genérico para um valor único persistido (não uma lista) —
+   usado pelo perfil (nome da pessoa). */
+function usePersistedValue(storageKey, defaultValue) {
+  const [value, setValue] = useState(() => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw !== null) return JSON.parse(raw);
+    } catch (e) {}
+    return defaultValue;
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem(storageKey, JSON.stringify(value)); } catch (e) {}
+  }, [storageKey, value]);
+
+  return [value, setValue];
+}
+
 /* Contexto único de dados — evita que duas telas que usam a
    mesma entidade (ex.: Home mostra eventos, Agenda edita eventos)
    fiquem com cópias de estado dessincronizadas. Cada entidade só
@@ -63,12 +81,14 @@ function DataProvider({ children }) {
   const [documents, documentActions] = usePersistedList("agenda_documents");
   const [checklists, checklistActions] = usePersistedList("agenda_checklists");
   const [events, eventActions] = usePersistedList("agenda_events");
+  const [profile, setProfile] = usePersistedValue("agenda_profile", null);
 
   const value = {
     projects, projectActions,
     documents, documentActions,
     checklists, checklistActions,
     events, eventActions,
+    profile, setProfile,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

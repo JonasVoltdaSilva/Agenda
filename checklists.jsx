@@ -37,7 +37,16 @@ function ChecklistItems({ items, onChange }) {
       ))}
       <form className="checklist-add" onSubmit={handleAdd}>
         <Ic.plus size={16} color="var(--color-text-secondary)" />
-        <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Adicionar item…" />
+        <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Adicionar item…" enterKeyHint="done" />
+        <button
+          type="submit"
+          className="btn btn--icon"
+          style={{ width: 32, minWidth: 32, height: 32, boxShadow: "none", flexShrink: 0 }}
+          disabled={!draft.trim()}
+          aria-label="Confirmar item"
+        >
+          <Ic.check size={16} />
+        </button>
       </form>
     </div>
   );

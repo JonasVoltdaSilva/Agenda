@@ -7,7 +7,7 @@ const babel = require("@babel/core");
 const fs = require("fs");
 
 // Ordem de carregamento (igual à do index.html). Escopo global compartilhado.
-const FILES = ["theme", "icons", "storage", "ui", "home", "calendar", "checklists", "notes", "views", "app"];
+const FILES = ["theme", "icons", "storage", "ui", "onboarding", "home", "calendar", "checklists", "notes", "views", "app"];
 
 const banner = "/* GERADO AUTOMATICAMENTE a partir de %s.jsx — não edite à mão. Rode: npm run build */\n";
 

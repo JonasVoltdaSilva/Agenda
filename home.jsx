@@ -18,7 +18,7 @@ function isSameDay(isoA, dateB) {
 }
 
 function HomeScreen({ onNavigate }) {
-  const { events, checklists } = useData();
+  const { events, checklists, profile } = useData();
   const today = useMemoHome(() => new Date(), []);
 
   const todayEvents = useMemoHome(
@@ -37,7 +37,7 @@ function HomeScreen({ onNavigate }) {
   return (
     <>
       <header className="app-header">
-        <h1 className="app-header__greeting">{greetingFor(today)}</h1>
+        <h1 className="app-header__greeting">{greetingFor(today)}{profile?.name ? `, ${profile.name}` : ""}</h1>
         <p className="app-header__subtitle" style={{ textTransform: "capitalize" }}>{dateLabel}</p>
       </header>
 

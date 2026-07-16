@@ -48,8 +48,23 @@ function ChecklistItems({
   }), React.createElement("input", {
     value: draft,
     onChange: e => setDraft(e.target.value),
-    placeholder: "Adicionar item\u2026"
-  })));
+    placeholder: "Adicionar item\u2026",
+    enterKeyHint: "done"
+  }), React.createElement("button", {
+    type: "submit",
+    className: "btn btn--icon",
+    style: {
+      width: 32,
+      minWidth: 32,
+      height: 32,
+      boxShadow: "none",
+      flexShrink: 0
+    },
+    disabled: !draft.trim(),
+    "aria-label": "Confirmar item"
+  }, React.createElement(Ic.check, {
+    size: 16
+  }))));
 }
 function ChecklistDetail({
   checklist,

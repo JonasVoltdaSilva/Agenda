@@ -16,8 +16,31 @@ function Modal({
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
+  useEffectUi(() => {
+    const count = parseInt(document.body.dataset.modalCount || "0", 10) + 1;
+    document.body.dataset.modalCount = String(count);
+    document.body.classList.add("modal-open");
+    return () => {
+      const remaining = Math.max(0, parseInt(document.body.dataset.modalCount || "1", 10) - 1);
+      document.body.dataset.modalCount = String(remaining);
+      if (remaining === 0) document.body.classList.remove("modal-open");
+    };
+  }, []);
+  const [viewportHeight, setViewportHeight] = useStateUi(() => window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  useEffectUi(() => {
+    if (!window.visualViewport) return;
+    function onResize() {
+      setViewportHeight(window.visualViewport.height);
+    }
+    window.visualViewport.addEventListener("resize", onResize);
+    onResize();
+    return () => window.visualViewport.removeEventListener("resize", onResize);
+  }, []);
   return React.createElement("div", {
     className: "modal-backdrop",
+    style: {
+      height: viewportHeight
+    },
     onClick: onClose
   }, React.createElement("div", {
     className: "modal-sheet",
@@ -50,21 +73,50 @@ function EmptyState({
 function ThemeSwitcherButton() {
   const {
     themeId,
-    theme,
     setTheme,
     availableThemes
   } = useTheme();
+  const {
+    profile,
+    setProfile
+  } = useData();
   const [open, setOpen] = useStateUi(false);
+  const [name, setName] = useStateUi(profile?.name || "");
+  function saveName() {
+    const trimmed = name.trim();
+    if (trimmed && trimmed !== profile?.name) setProfile({
+      ...profile,
+      name: trimmed
+    });
+  }
   return React.createElement(React.Fragment, null, React.createElement("button", {
     className: "theme-switch-btn",
     onClick: () => setOpen(true),
-    "aria-label": "Trocar tema"
+    "aria-label": "Configura\xE7\xF5es"
   }, React.createElement(Ic.sparkle, {
     size: 18
   })), open && React.createElement(Modal, {
-    title: "Escolher tema",
-    onClose: () => setOpen(false)
-  }, availableThemes.map(t => React.createElement("button", {
+    title: "Perfil e tema",
+    onClose: () => {
+      saveName();
+      setOpen(false);
+    }
+  }, React.createElement("div", {
+    className: "field"
+  }, React.createElement("label", {
+    htmlFor: "profile-name"
+  }, "Seu nome"), React.createElement("input", {
+    id: "profile-name",
+    value: name,
+    onChange: e => setName(e.target.value),
+    onBlur: saveName
+  })), React.createElement("p", {
+    className: "section-title",
+    style: {
+      marginTop: 0,
+      fontSize: "1.15rem"
+    }
+  }, "Tema"), availableThemes.map(t => React.createElement("button", {
     key: t.id,
     className: "card",
     style: {
@@ -74,10 +126,7 @@ function ThemeSwitcherButton() {
       alignItems: "center",
       justifyContent: "space-between"
     },
-    onClick: () => {
-      setTheme(t.id);
-      setOpen(false);
-    }
+    onClick: () => setTheme(t.id)
   }, React.createElement("span", {
     className: "card__title",
     style: {

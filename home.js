@@ -18,7 +18,8 @@ function HomeScreen({
 }) {
   const {
     events,
-    checklists
+    checklists,
+    profile
   } = useData();
   const today = useMemoHome(() => new Date(), []);
   const todayEvents = useMemoHome(() => events.filter(e => isSameDay(e.startAt, today)).sort((a, b) => a.startAt.localeCompare(b.startAt)), [events, today]);
@@ -38,7 +39,7 @@ function HomeScreen({
     className: "app-header"
   }, React.createElement("h1", {
     className: "app-header__greeting"
-  }, greetingFor(today)), React.createElement("p", {
+  }, greetingFor(today), profile?.name ? `, ${profile.name}` : ""), React.createElement("p", {
     className: "app-header__subtitle",
     style: {
       textTransform: "capitalize"
