@@ -37,7 +37,7 @@ const SCREENS = {
 function RootViews() {
   const [tab, setTab] = useStateViews("home");
   const ActiveScreen = SCREENS[tab];
-  return React.createElement(React.Fragment, null, React.createElement(ActiveScreen, {
+  return React.createElement(React.Fragment, null, React.createElement(ThemeSwitcherButton, null), React.createElement(ActiveScreen, {
     onNavigate: setTab
   }), React.createElement("nav", {
     className: "bottom-nav"

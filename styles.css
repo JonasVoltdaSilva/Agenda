@@ -50,6 +50,56 @@
 }
 
 /* ============================================================
+   THEME 02 — Windows XP (homenagem, não cópia). Novo tema = só
+   este bloco de tokens + os overrides estruturais logo abaixo,
+   marcados "windows-xp only" — zero mudança nos componentes/JS.
+   ============================================================ */
+
+[data-theme="windows-xp"] {
+  /* paleta — Luna Blue */
+  --color-bg: #5A9BDC;
+  --color-surface: #ECE9D8;      /* cinza/bege clássico das janelas XP */
+  --color-surface-elevated: #FFFFFF;
+  --color-primary: #1857A4;
+  --color-primary-ink: #FFFFFF;
+  --color-secondary: #3BA33B;    /* verde do botão Iniciar */
+  --color-ink: #101010;
+  --color-text-secondary: #4A4A4A;
+  --color-divider: #ACA899;
+  --color-dot-grid: transparent; /* sem grid pontilhado neste tema */
+  --color-error: #C42B1C;
+  --color-success: #3BA33B;
+
+  /* tipografia — fontes de sistema, sem dependência de rede */
+  --font-display: 'Trebuchet MS', Verdana, sans-serif;
+  --font-body: Tahoma, Verdana, 'Segoe UI', sans-serif;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* raio — mais reto, janelas de sistema */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-lifted: 0 3px 8px rgba(0, 0, 0, 0.45);
+
+  --tap-min: 44px;
+  --dot-size: 0px;
+  --dot-gap: 22px;
+
+  /* papel de parede — releitura em gradiente do clássico céu+colina,
+     sem depender de asset de imagem */
+  --bg-texture: linear-gradient(180deg,
+    #4C86C6 0%, #7FB2E0 32%, #CFE7A8 52%, #6FAE4A 72%, #3F8C34 100%);
+}
+
+/* ============================================================
    RESET / BASE
    ============================================================ */
 
@@ -111,7 +161,7 @@ a { color: inherit; }
 }
 
 .app-header {
-  padding: var(--space-lg) var(--space-md) var(--space-sm);
+  padding: calc(var(--space-lg) + env(safe-area-inset-top, 0)) var(--space-md) var(--space-sm);
 }
 
 .app-header__greeting {
@@ -196,6 +246,41 @@ a { color: inherit; }
   background: var(--color-surface-elevated);
   color: var(--color-primary);
   box-shadow: var(--shadow-soft);
+}
+
+/* Vidro fosco sobre a área de status/ilha dinâmica (iOS PWA) — ver
+   nota em index.html. Some sozinho em telas sem notch (altura 0). */
+.status-bar-blend {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--color-bg);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.theme-switch-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0) + 12px);
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  min-height: 0;
+  border-radius: 50%;
+  background: var(--color-surface-elevated);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-soft);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
 }
 
 .fab {
@@ -470,3 +555,118 @@ a { color: inherit; }
 @media (min-width: 400px) {
   .app-header__greeting { font-size: 2.5rem; }
 }
+
+/* ============================================================
+   OVERRIDES ESTRUTURAIS — só ativos em [data-theme="windows-xp"].
+   Redefinem forma/estrutura (não só cor) para que o tema pareça
+   um app diferente, como pedido no prompt original. Um tema novo
+   no futuro segue este mesmo padrão: escopar tudo em [data-theme="x"].
+   ============================================================ */
+
+[data-theme="windows-xp"] .card,
+[data-theme="windows-xp"] .project-card,
+[data-theme="windows-xp"] .modal-sheet {
+  border: 1px solid #0A3D82;
+  position: relative;
+  overflow: hidden;
+  padding-top: 38px;
+}
+[data-theme="windows-xp"] .project-card { border: 1px solid #0A3D82; border-top: 1px solid #0A3D82; }
+
+[data-theme="windows-xp"] .card::before,
+[data-theme="windows-xp"] .project-card::before,
+[data-theme="windows-xp"] .modal-sheet::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 28px;
+  background: linear-gradient(180deg, #3A93EC 0%, #1B4E96 55%, #0A3D82 100%);
+}
+[data-theme="windows-xp"] .card::after,
+[data-theme="windows-xp"] .project-card::after {
+  content: "";
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 10px; height: 10px;
+  background: #4FAE4A;
+  border: 1px solid #2C7A2C;
+  border-radius: 2px;
+  box-shadow: -18px 0 0 #F0C33C, -18px 0 0 1px #A9840F, -36px 0 0 #E84B37, -36px 0 0 1px #7A1F13;
+}
+
+/* Modal: mantém o botão de fechar real (acessível/clicável) em vez
+   de pontinhos decorativos — só reposiciona sobre a barra falsa. */
+[data-theme="windows-xp"] .modal-sheet { padding-top: 44px; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+[data-theme="windows-xp"] .modal-sheet::before { height: 34px; }
+[data-theme="windows-xp"] .modal-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 34px;
+  margin: 0;
+  padding: 0 6px 0 12px;
+  z-index: 1;
+}
+[data-theme="windows-xp"] .modal-header__title {
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+[data-theme="windows-xp"] .modal-header .btn--icon {
+  background: #E84B37;
+  border: 1px solid #7A1F13;
+  border-radius: 2px;
+  color: #FFFFFF;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  min-height: 0;
+  box-shadow: none;
+}
+
+[data-theme="windows-xp"] .btn {
+  background: linear-gradient(180deg, #5CACF2 0%, #1D5FBF 48%, #1450A8 52%, #2E74D4 100%);
+  border: 1px solid #14418C;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+[data-theme="windows-xp"] .btn:active { filter: brightness(0.92); transform: none; }
+[data-theme="windows-xp"] .btn--secondary {
+  background: var(--color-surface-elevated);
+  color: var(--color-ink);
+  border: 1px solid var(--color-divider);
+  text-shadow: none;
+}
+[data-theme="windows-xp"] .btn--icon { background: var(--color-surface-elevated); border: 1px solid var(--color-divider); }
+
+[data-theme="windows-xp"] .chip { border-radius: var(--radius-sm); background: #D7E6F7; color: #1450A8; }
+
+[data-theme="windows-xp"] .calendar-cell { border: 1px solid var(--color-divider); background: var(--color-surface-elevated); }
+[data-theme="windows-xp"] .calendar-cell[data-selected="true"] {
+  background: linear-gradient(180deg, #3A93EC 0%, #0A3D82 100%);
+  border-color: #0A3D82;
+}
+[data-theme="windows-xp"] .calendar-cell[data-today="true"] { border-color: var(--color-primary); }
+
+[data-theme="windows-xp"] .checklist-item__box { border-radius: 2px; border-color: var(--color-primary); }
+[data-theme="windows-xp"] .checklist-item { border-bottom-style: solid; }
+
+[data-theme="windows-xp"] .bottom-nav {
+  background: linear-gradient(180deg, #2A5CB8 0%, #1B4696 55%, #0F3A82 100%);
+  border-top: 1px solid #0A2E6E;
+  box-shadow: none;
+}
+[data-theme="windows-xp"] .bottom-nav__item { color: #DCE8FA; }
+[data-theme="windows-xp"] .bottom-nav__item[data-active="true"] {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-sm);
+  margin: 4px;
+}
+
+[data-theme="windows-xp"] .fab {
+  background: linear-gradient(180deg, #5CD65C 0%, #2C8A2C 100%);
+  border: 1px solid #1F6B1F;
+}
+
+[data-theme="windows-xp"] .theme-switch-btn { border: 1px solid var(--color-divider); }

@@ -3,7 +3,7 @@
    "Themed*" widgets do plano original) — Modal, EmptyState.
    Carregado antes de home/calendar/checklists/notes para reuso.
    ============================================================ */
-const { useEffect: useEffectUi } = React;
+const { useEffect: useEffectUi, useState: useStateUi } = React;
 
 function Modal({ title, onClose, children }) {
   useEffectUi(() => {
@@ -36,5 +36,37 @@ function EmptyState({ icon, text }) {
   );
 }
 
+/* Seletor de tema — prova visível de que o Theme Engine é
+   plugável: qualquer tema registrado em theme.jsx aparece aqui
+   sem nenhuma mudança neste componente. */
+function ThemeSwitcherButton() {
+  const { themeId, theme, setTheme, availableThemes } = useTheme();
+  const [open, setOpen] = useStateUi(false);
+
+  return (
+    <>
+      <button className="theme-switch-btn" onClick={() => setOpen(true)} aria-label="Trocar tema">
+        <Ic.sparkle size={18} />
+      </button>
+      {open && (
+        <Modal title="Escolher tema" onClose={() => setOpen(false)}>
+          {availableThemes.map((t) => (
+            <button
+              key={t.id}
+              className="card"
+              style={{ width: "100%", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+              onClick={() => { setTheme(t.id); setOpen(false); }}
+            >
+              <span className="card__title" style={{ marginBottom: 0 }}>{t.label}</span>
+              {t.id === themeId && <Ic.check size={18} color="var(--color-primary)" />}
+            </button>
+          ))}
+        </Modal>
+      )}
+    </>
+  );
+}
+
 window.Modal = Modal;
 window.EmptyState = EmptyState;
+window.ThemeSwitcherButton = ThemeSwitcherButton;

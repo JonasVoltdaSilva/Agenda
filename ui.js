@@ -1,7 +1,8 @@
 /* GERADO AUTOMATICAMENTE a partir de ui.jsx — não edite à mão. Rode: npm run build */
 (function () {
 const {
-  useEffect: useEffectUi
+  useEffect: useEffectUi,
+  useState: useStateUi
 } = React;
 function Modal({
   title,
@@ -46,6 +47,48 @@ function EmptyState({
     className: "empty-state__icon"
   }, icon), React.createElement("p", null, text));
 }
+function ThemeSwitcherButton() {
+  const {
+    themeId,
+    theme,
+    setTheme,
+    availableThemes
+  } = useTheme();
+  const [open, setOpen] = useStateUi(false);
+  return React.createElement(React.Fragment, null, React.createElement("button", {
+    className: "theme-switch-btn",
+    onClick: () => setOpen(true),
+    "aria-label": "Trocar tema"
+  }, React.createElement(Ic.sparkle, {
+    size: 18
+  })), open && React.createElement(Modal, {
+    title: "Escolher tema",
+    onClose: () => setOpen(false)
+  }, availableThemes.map(t => React.createElement("button", {
+    key: t.id,
+    className: "card",
+    style: {
+      width: "100%",
+      textAlign: "left",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between"
+    },
+    onClick: () => {
+      setTheme(t.id);
+      setOpen(false);
+    }
+  }, React.createElement("span", {
+    className: "card__title",
+    style: {
+      marginBottom: 0
+    }
+  }, t.label), t.id === themeId && React.createElement(Ic.check, {
+    size: 18,
+    color: "var(--color-primary)"
+  })))));
+}
 window.Modal = Modal;
 window.EmptyState = EmptyState;
+window.ThemeSwitcherButton = ThemeSwitcherButton;
 })();

@@ -24,6 +24,7 @@ function RootViews() {
 
   return (
     <>
+      <ThemeSwitcherButton />
       <ActiveScreen onNavigate={setTab} />
       <nav className="bottom-nav">
         {TABS.map(({ id, label, Icon }) => (

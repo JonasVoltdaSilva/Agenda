@@ -11,6 +11,11 @@ const THEMES = {
     id: "bullet-journal",
     label: "Bullet Journal",
     icon: "notebook"
+  },
+  "windows-xp": {
+    id: "windows-xp",
+    label: "Windows XP",
+    icon: "sparkle"
   }
 };
 const THEME_STORAGE_KEY = "agenda_theme";

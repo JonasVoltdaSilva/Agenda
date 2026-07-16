@@ -11,8 +11,13 @@ const THEMES = {
     label: "Bullet Journal",
     icon: "notebook",
   },
-  // Theme 02 "Windows XP" entra aqui numa fase futura, com o
-  // bloco [data-theme="windows-xp"] correspondente em styles.css.
+  "windows-xp": {
+    id: "windows-xp",
+    label: "Windows XP",
+    icon: "sparkle",
+  },
+  // Um novo tema = 1 entrada aqui + o bloco [data-theme="..."]
+  // correspondente em styles.css. Nenhum componente muda.
 };
 
 const THEME_STORAGE_KEY = "agenda_theme";
