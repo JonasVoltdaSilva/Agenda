@@ -15,6 +15,9 @@ function AppGate() {
 function App() {
   return React.createElement(ThemeProvider, null, React.createElement(DataProvider, null, React.createElement(AppGate, null)));
 }
+if (window.navigator.standalone === true) {
+  document.documentElement.classList.add("pwa-standalone");
+}
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(React.createElement(App, null));
 })();

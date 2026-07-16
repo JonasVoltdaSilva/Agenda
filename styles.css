@@ -105,6 +105,22 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Reserva de área segura (notch/ilha dinâmica, home indicator) só
+   faz sentido quando o app roda instalado (standalone/fullscreen)
+   e o conteúdo vai até a borda física da tela. No Safari em aba
+   normal, o próprio navegador já reserva esse espaço — somar os
+   dois deixaria um respiro dobrado, "empurrando" o conteúdo. A
+   classe .pwa-standalone é aplicada via JS (app.jsx) checando
+   window.navigator.standalone. */
+:root {
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+}
+html.pwa-standalone {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -160,7 +176,7 @@ a { color: inherit; }
   flex-direction: column;
   justify-content: center;
   gap: var(--space-xl);
-  padding: calc(var(--space-xl) + env(safe-area-inset-top, 0px)) var(--space-lg) calc(var(--space-xl) + env(safe-area-inset-bottom, 0px));
+  padding: calc(var(--space-xl) + var(--safe-top)) var(--space-lg) calc(var(--space-xl) + var(--safe-bottom));
 }
 
 .onboarding-screen__title {
@@ -216,7 +232,7 @@ a { color: inherit; }
 }
 
 .app-header {
-  padding: calc(var(--space-lg) + env(safe-area-inset-top, 0)) var(--space-md) var(--space-sm);
+  padding: calc(var(--space-lg) + var(--safe-top)) var(--space-md) var(--space-sm);
 }
 
 .app-header__greeting {
@@ -237,7 +253,7 @@ a { color: inherit; }
   flex: 1;
   /* espaço suficiente para nunca ficar embaixo do FAB + bottom-nav
      (FAB: 64px+space-lg de base + 56px de altura + folga) */
-  padding: 0 var(--space-md) calc(64px + var(--space-lg) + 56px + var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  padding: 0 var(--space-md) calc(64px + var(--space-lg) + 56px + var(--space-lg) + var(--safe-bottom));
   overflow-y: auto;
 }
 
@@ -312,7 +328,7 @@ a { color: inherit; }
   top: 0;
   left: 0;
   right: 0;
-  height: env(safe-area-inset-top, 0px);
+  height: var(--safe-top);
   background: var(--color-bg);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
@@ -324,7 +340,7 @@ a { color: inherit; }
 
 .theme-switch-btn {
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0) + 12px);
+  top: calc(var(--safe-top) + 12px);
   right: 12px;
   width: 40px;
   height: 40px;
@@ -350,7 +366,7 @@ body.modal-open .theme-switch-btn {
 .fab {
   position: fixed;
   right: var(--space-lg);
-  bottom: calc(64px + var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(64px + var(--space-lg) + var(--safe-bottom));
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -557,7 +573,7 @@ body.modal-open .theme-switch-btn {
   display: flex;
   background: var(--color-surface-elevated);
   box-shadow: 0 -2px 12px rgba(43, 38, 34, 0.12);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: var(--safe-bottom);
   z-index: 10;
 }
 
@@ -595,7 +611,7 @@ body.modal-open .theme-switch-btn {
   max-width: 560px;
   margin: 0 auto;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: var(--space-lg) var(--space-md) calc(var(--space-lg) + env(safe-area-inset-bottom, 0));
+  padding: var(--space-lg) var(--space-md) calc(var(--space-lg) + var(--safe-bottom));
   max-height: 85vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lifted);
